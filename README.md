@@ -1,6 +1,6 @@
 <p align="center">
-  <img src="app/src/main/res/drawable/logo_newlife.png" width="" alt="New Life Baby Home Logo">
-  <img src="app/src/main/res/drawable/axonix_logo.png" width="" alt="Axonix Logo">
+  <img src="app/src/main/res/drawable/logo_newlife.png" width="80" height="80" alt="New Life Baby Home Logo">
+  <img src="app/src/main/res/drawable/axonix_logo.png" width="80" height="80" alt="Axonix Logo">
 </p>
 
 <h1 align="center">New Life Baby Home</h1>
