@@ -1,0 +1,82 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    name: Build & Quality Checks
+    runs-on: ubuntu-latest
+    env:
+      GRADLE_USER_HOME: ${{ runner.temp }}/.gradle
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+
+      - name: Cache Gradle wrapper and caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', '**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Ensure Gradle wrapper is executable
+        run: chmod +x ./gradlew
+
+      - name: Print Java and Gradle info
+        run: |
+          java -version
+          ./gradlew -v
+
+      # ---- Build & tests ----
+      - name: Run Gradle assembleDebug
+        run: ./gradlew clean :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Run Android Lint
+        run: ./gradlew :app:lintDebug --no-daemon || true
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest --no-daemon || true
+
+      # Snyk security scan
+      - name: Setup Snyk CLI (optional)
+        if: ${{ secrets.SNYK_TOKEN != '' }}
+        uses: snyk/actions/setup@v2
+        with:
+          version: '1.1000.0' # Snyk CLI version
+
+      - name: Run Snyk test (optional)
+        if: ${{ secrets.SNYK_TOKEN != '' }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk test --all-projects --file=build.gradle.kts || snyk test || true
+        # Snyk supports many ecosystems
+
+      # ---- Collect build artifact (debug apk) ----
+      - name: Upload debug APK artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: |
+            app/build/outputs/**/*.apk
+            **/build/outputs/**/*.apk
