@@ -8,22 +8,22 @@ on:
 
 jobs:
   build:
-    name: Build & Verify Android Project
+    name: Build & Verify New Life Baby Home Project
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout Code
+      # 1 Checkout Code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up JDK
+      # 2 Set up JDK
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
 
-      # 3️⃣ Cache Gradle dependencies
+      # 3 Cache Gradle dependencies
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
         with:
@@ -34,31 +34,31 @@ jobs:
           restore-keys: |
             gradle-
 
-      # 4️⃣ Make Gradle executable
+      # 4 Make Gradle executable
       - name: Make Gradle executable
         run: chmod +x gradlew
 
-      # 5️⃣ Build the project
+      # 5 Build the project
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      # 6️⃣ Run Android Lint
+      # 6 Run Android Lint
       - name: Run Android Lint (ignore warnings)
         run: ./gradlew lint || true
 
-      # 7️⃣ Run Tests (if available)
+      # 7 Run Tests (if available)
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
         continue-on-error: true
 
-      # 8️⃣ Upload Build Artifact
+      # 8 Upload Build Artifact
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: NewLifeBabyHome-debug-apk
           path: app/build/outputs/apk/debug/*.apk
 
-  # 9️⃣ Security Scanning Job
+  # 9 Security Scanning Job
   security:
     name: Security Scan (Snyk)
     runs-on: ubuntu-latest
