@@ -1,3 +1,14 @@
+<p align="center">
+  <img src="app/src/main/res/drawable/logo_newlife.png" width="" alt="New Life Baby Home Logo">
+  <img src="app/src/main/res/drawable/axonix_logo.png" width="" alt="Axonix Logo">
+</p>
+
+<h1 align="center">New Life Baby Home</h1>
+<p align="center">
+  A community-focused Android application that helps connect donors, volunteers, and the New Life Baby Home NPO.<br>
+  <em>Built with love by Team Axonix</em>
+</p>
+
 # New Life Baby Home Mobile Application
 
 
